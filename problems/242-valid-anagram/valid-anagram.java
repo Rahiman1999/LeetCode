@@ -11,14 +11,13 @@ class Solution {
             map[(s.charAt(i)-'a')]++;
         }
         for(int i=0;i<s.length();i++){
+            if(map[(t.charAt(i)-'a')]==0){
+                return false;
+            }
             map[(t.charAt(i)-'a')]--;
         }
 
-        for(int i:map){
-            if(i!=0){
-                return false;
-            }
-        }
+       
         return true;
     }
 }
