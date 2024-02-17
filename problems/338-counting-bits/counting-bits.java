@@ -4,13 +4,13 @@ class Solution {
       int ans[] = new int[n+1];
 
       for(int i=0;i<=n;i++){
-          int countBit=i;
-          int count=0;
-          while(countBit!=0){
-            countBit=countBit&(countBit-1);
-            count++;
+          int number=i;
+          int countBit=0;
+          while(number!=0){
+            number=number&(number-1);
+            countBit++;
           }
-          ans[i]=count;
+          ans[i]=countBit;
       }  
         return ans;
     }
