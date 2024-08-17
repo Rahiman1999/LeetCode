@@ -1,6 +1,6 @@
 class Solution {
     public int partitionString(String s) {
-        int i=0,j=0,count=0;
+        int i=0,j=0,count=1;
         HashSet<Character> hs = new HashSet<>();
         while(i<s.length()&&j<s.length()){
            if(!hs.contains(s.charAt(j))){
@@ -13,7 +13,7 @@ class Solution {
            }
             
         }
-        return count+1;
+        return count;
         
     }
 }
