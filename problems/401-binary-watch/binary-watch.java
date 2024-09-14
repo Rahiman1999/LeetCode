@@ -3,9 +3,6 @@ class Solution {
     public List<String> readBinaryWatch(int turnedOn) {
         String time="";
         int arr[] = {1,2,4,8,1,2,4,8,16,32};
-        // if(turnedOn>arr.length-1){
-        //     return ans;
-        // }
         findTime(arr,time,turnedOn,0,0,0);
         return ans;
     }
