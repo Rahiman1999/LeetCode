@@ -1,17 +1,16 @@
+import java.util.*;
 class Solution {
     public int[] topKFrequent(int[] nums, int k) {
-        HashMap<Integer,Integer> hp = new HashMap<>();
-        PriorityQueue<Map.Entry<Integer,Integer>> ds = new PriorityQueue<>((a,b)->b.getValue()-a.getValue());
-        for(int num: nums){
-            hp.put(num,hp.getOrDefault(num,0)+1);
+        int[] ans =new int[k];
+        HashMap<Integer,Integer> map = new HashMap<>();
+        for(int i=0;i<nums.length;i++){
+            map.merge(nums[i],1,Integer::sum);
         }
-        ds.addAll(hp.entrySet());
-        int [] result = new int[k];
-        for(int i=0;i<k;i++){
-            Map.Entry<Integer,Integer> sample = ds.peek();
-            result[i] = sample.getKey();
-            ds.remove(sample);
-        }
-        return result;
+        ArrayList<Integer> list = new ArrayList<>(map.keySet());
+        list.sort((a,b) -> map.get(b) - map.get(a));
+       for(int i=0;i<k;i++){
+        ans[i]=list.get(i);
+       }
+       return ans;
     }
 }
