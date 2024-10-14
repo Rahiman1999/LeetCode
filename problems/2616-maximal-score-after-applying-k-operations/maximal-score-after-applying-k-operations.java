@@ -11,7 +11,6 @@ class Solution {
             pq.add((long)Math.ceil(value/3.0));
             k--;
         }
-        // System.out.println(Math.ceil(10/3.0));
         return score;
     }
 }
