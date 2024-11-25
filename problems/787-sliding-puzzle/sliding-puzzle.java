@@ -1,83 +1,49 @@
 class Solution {
+    int min = Integer.MAX_VALUE;
+    int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
-    // Direction map for valid moves from each position on the flattened board.
-    // Each index corresponds to a position on the 1D representation of the board,
-    // and the values are the indices it can swap with (adjacent tiles).
-    private final int[][] dir = {
-            {1, 3},    // Position 0 can swap with positions 1 and 3.
-            {0, 2, 4}, // Position 1 can swap with positions 0, 2, and 4.
-            {1, 5},    // Position 2 can swap with positions 1 and 5.
-            {0, 4},    // Position 3 can swap with positions 0 and 4.
-            {3, 5, 1}, // Position 4 can swap with positions 3, 5, and 1.
-            {4, 2}     // Position 5 can swap with positions 4 and 2.
-    };
-
-    /**
-     * Solves the sliding puzzle and returns the minimum number of moves required to solve it.
-     * If solving is impossible, returns -1.
-     *
-     * @param board The 2x3 puzzle board as a 2D array.
-     * @return The least number of moves to solve the puzzle or -1 if unsolvable.
-     */
     public int slidingPuzzle(int[][] board) {
-        // Convert the board into a string representation for easier manipulation.
-        StringBuilder sb = new StringBuilder();
+        int[] zero = {-1, -1};
+        outer:
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
-                sb.append(board[i][j]);
+                if (board[i][j] == 0) {
+                    zero = new int[]{i, j};
+                    break outer;
+                }
             }
         }
-
-        // Map to track visited states and their minimum move counts.
-        Map<String, Integer> visited = new HashMap<>();
-
-        // Perform a recursive DFS to explore all possible states.
-        sol(sb.toString(), visited, sb.toString().indexOf("0"), 0);
-
-        // Return the number of moves to reach the target state or -1 if unsolvable.
-        return visited.getOrDefault("123450", -1);
+        helper_backtrack(board, 0, new int[]{-1, -1}, zero);
+        return min == Integer.MAX_VALUE ? -1 : min;
     }
-
-    /**
-     * Recursive helper function to explore all possible board states using DFS.
-     *
-     * @param state   Current board state as a string.
-     * @param visited Map to store the minimum moves for each visited state.
-     * @param zeroidx Index of the empty tile (0) in the string representation.
-     * @param moves   Current move count.
-     */
-    void sol(String state, Map<String, Integer> visited, int zeroidx, int moves) {
-        // If the current state has been visited with fewer or equal moves, skip it.
-        if (visited.containsKey(state) && visited.get(state) <= moves) {
+    public void helper_backtrack(int[][] board, int moves, int[] last, int[] curr) {
+        if (moves >= 20) return;
+        if (helper_isDone(board)) {
+            min = Math.min(min, moves);
             return;
         }
-
-        // Mark the current state as visited with the minimum move count.
-        visited.put(state, moves);
-
-        // Explore all valid moves from the current position of the empty tile (0).
-        for (int p : dir[zeroidx]) {
-            // Generate a new state by swapping 0 with an adjacent tile.
-            String newState = swap(state, zeroidx, p);
-
-            // Recurse with the new state, updating the zero index and move count.
-            sol(newState, visited, p, moves + 1);
+        for (int[] dir : dirs) {
+            int i = curr[0] + dir[0];
+            int j = curr[1] + dir[1];
+            if (i < 0 || i >= 2 || j < 0 || j >= 3 || (last[0] == i && last[1] == j)) continue;
+            int[] newMove = {i, j};
+            helper_flip(board, curr, newMove);
+            helper_backtrack(board, moves + 1, curr, newMove);
+            helper_flip(board, curr, newMove);
         }
     }
-
-    /**
-     * Swaps two characters in a string and returns the new string.
-     *
-     * @param str Original string.
-     * @param i   Index of the first character to swap.
-     * @param j   Index of the second character to swap.
-     * @return The new string with the characters swapped.
-     */
-    private String swap(String str, int i, int j) {
-        // Use StringBuilder to perform the swap operation.
-        StringBuilder sb = new StringBuilder(str);
-        sb.setCharAt(i, str.charAt(j));
-        sb.setCharAt(j, str.charAt(i));
-        return sb.toString();
+    public void helper_flip(int[][] board, int[] f, int[] s) {
+        int temp = board[f[0]][f[1]];
+        board[f[0]][f[1]] = board[s[0]][s[1]];
+        board[s[0]][s[1]] = temp;
+    }
+    public boolean helper_isDone(int[][] board) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (i == 1 && j == 2) return true;
+                if (board[i][j] != 3 * i + j + 1) return false;
+            }
+        }
+        return true;
     }
 }
